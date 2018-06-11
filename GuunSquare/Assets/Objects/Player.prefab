@@ -390,6 +390,8 @@ MonoBehaviour:
   - {fileID: 114011281979126412}
   - {fileID: 114351683266771302}
   - {fileID: 114644323546097794}
+  HealthBar: []
+  Bulletsound: {fileID: 0}
 --- !u!114 &114351683266771302
 MonoBehaviour:
   m_ObjectHideFlags: 1

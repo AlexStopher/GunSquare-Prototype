@@ -24,7 +24,8 @@ public class Player : MonoBehaviour
     public Vector3 Target;
     public List<BulletGenerator> sBulGen;
     public MeshRenderer[] HealthBar;
-
+    AudioSource audioShotSound;
+    public AudioClip Bulletsound;
     
 
     // Use this for initialization
@@ -32,7 +33,8 @@ public class Player : MonoBehaviour
     {
         rPlayer = GetComponent<Rigidbody>();
         Speed = 0.2f;
-	}
+        audioShotSound = GetComponent<AudioSource>();
+    }
 	
 	// Update is called once per frame
 	void Update ()
@@ -82,8 +84,9 @@ public class Player : MonoBehaviour
             StartCoroutine(FireWeapon());
         }
 
-        if(Input.GetAxis("RightTrigger") >= 0.1 && CanFire == true)
+        if(Input.GetAxis("RightTrigger") <= -0.1 && CanFire == true)
         {
+            audioShotSound.PlayOneShot(Bulletsound);
             StartCoroutine(FireWeapon());
         }
 
@@ -93,6 +96,7 @@ public class Player : MonoBehaviour
     {
         CanFire = false;
 
+        
 
         if (eGunLevel == eItemLevels.Level1)
         {
@@ -163,18 +167,6 @@ public class Player : MonoBehaviour
             HealthBar[Health].material.SetColor("_Color", Color.red);
 
         }
-
-        if (collision.gameObject.CompareTag("Boundary"))
-        {
-            Physics.IgnoreCollision(collision.collider, GetComponent<Collider>());
-        }
     }
 
-    private void OnCollisionStay(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Boundary"))
-        {
-            Physics.IgnoreCollision(collision.collider, GetComponent<Collider>());
-        }
-    }
 }

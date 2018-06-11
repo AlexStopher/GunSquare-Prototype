@@ -445,7 +445,7 @@ MonoBehaviour:
   - {fileID: 114460123149210504}
   - {fileID: 114580784851232956}
   sGameManager: {fileID: 0}
-  EnemySpeed: 0
+  EnemySpeed: 0.1
   ShootSpeed: 0.2
   eCurrentState: 0
 --- !u!114 &114460123149210504

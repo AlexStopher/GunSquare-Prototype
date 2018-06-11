@@ -23,13 +23,14 @@ public class EnemyScript : MonoBehaviour
         SeekingNode,
         Moving,
         Stationary,
+        Disabled
 
     };
 
     // Use this for initialization
     void Start()
     {
-        EnemySpeed = 0.05f;
+        //EnemySpeed = 0.05f;
         PlayerTarget = GameObject.FindGameObjectWithTag("Player").transform;
         sGameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         sNodeManager = GameObject.FindGameObjectWithTag("Nodes").GetComponent<NodeManager>();
@@ -54,6 +55,7 @@ public class EnemyScript : MonoBehaviour
 
                 transform.Rotate(Vector3.up * 2, Space.World);
 
+                //Make a proper timer here
                 if (Timer >= 1000)
                     eCurrentState = eEnemyState.SeekingNode;
                 else
@@ -160,10 +162,15 @@ public class EnemyScript : MonoBehaviour
 
             if (Health <= 0)
             {
-                Destroy(this.gameObject);
                 sGameManager.EnemiesLeft--;
+                Destroy(this.gameObject);
+                            
             }
 
+            if (this.gameObject.tag == "Medium Enemy")
+                sGameManager.Score += 300;
+            else
+                sGameManager.Score += 100;
         }
       
     }

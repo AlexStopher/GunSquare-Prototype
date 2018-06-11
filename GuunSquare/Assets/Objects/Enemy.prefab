@@ -231,8 +231,8 @@ MonoBehaviour:
   sBullGen:
   - {fileID: 114372323801326604}
   sGameManager: {fileID: 0}
-  EnemySpeed: 0.1
-  ShootSpeed: 1
+  EnemySpeed: 0.03
+  ShootSpeed: 1.5
   eCurrentState: 0
 --- !u!114 &114372323801326604
 MonoBehaviour:

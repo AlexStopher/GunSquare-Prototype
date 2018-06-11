@@ -10,19 +10,15 @@ public class PowerupGenerator : MonoBehaviour
     {
 		
 	}
-	
-	// Update is called once per frame
-	void Update ()
-    {
-		
-	}
 
     public void SpawnPowerup()
     {
         //PowerupList.Length
         //Spawn random powerup
         int i = Random.Range(0, PowerupList.Length);
+        int j = Random.Range(-10, 10);
+        int k = Random.Range(-10,10);
 
-        Instantiate<GameObject>(PowerupList[i], new Vector3(0, 1, 0), Quaternion.identity);
+        Instantiate<GameObject>(PowerupList[i], new Vector3(j, 1, k), Quaternion.identity);
     }
 }
