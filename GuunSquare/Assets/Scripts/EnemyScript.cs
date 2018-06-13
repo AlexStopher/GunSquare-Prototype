@@ -2,21 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class EnemyScript : MonoBehaviour
 {
     public Vector3 Target;
     public Transform PlayerTarget;
     public int Timer;
-    bool CanFire = true;
+    bool CanFire;
     public int CurrentPosition = 100;
     public int LastPosition = 100;
     public int Health;
+
     public List<BulletGenerator> sBullGen;
     NodeManager sNodeManager;
     public GameManager sGameManager;
+    public EnemyGenerator sEnemyGen;
+
     public float EnemySpeed;
     public float ShootSpeed;
     public eEnemyState eCurrentState;
+
+    
 
     public enum eEnemyState
     {
@@ -27,6 +33,7 @@ public class EnemyScript : MonoBehaviour
 
     };
 
+    
     // Use this for initialization
     void Start()
     {
@@ -34,21 +41,47 @@ public class EnemyScript : MonoBehaviour
         PlayerTarget = GameObject.FindGameObjectWithTag("Player").transform;
         sGameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         sNodeManager = GameObject.FindGameObjectWithTag("Nodes").GetComponent<NodeManager>();
+        sEnemyGen = GameObject.FindGameObjectWithTag("Enemy Generator").GetComponent<EnemyGenerator>();
+        CanFire = true;
 
         //if light no seekingnodes
         if (gameObject.tag == "Medium Enemy")
+        {
             eCurrentState = eEnemyState.SeekingNode;
+            Health = 3;
+        }
+        else if (gameObject.tag == "Enemy")
+        {
+            Health = 1;
+        }
+
     }
-	
-	// Update is called once per frame
-	void Update ()
+
+    private void OnEnable()
+    {
+        CanFire = true;
+
+        if (gameObject.tag == "Medium Enemy")
+        {
+            eCurrentState = eEnemyState.SeekingNode;
+            Health = 3;
+        }
+        else if (gameObject.tag == "Enemy")
+        {
+            Health = 1;
+        }
+    }
+
+    // Update is called once per frame
+    void Update ()
     {
 
         
 
         if (gameObject.tag == "Medium Enemy")
         {
-
+            
+            //Enemy states 
             if (eCurrentState == eEnemyState.Stationary)
             {
                 Vector3 temp = new Vector3(this.transform.rotation.x, this.transform.rotation.y + 1, transform.rotation.z);
@@ -92,15 +125,17 @@ public class EnemyScript : MonoBehaviour
 
             if (CanFire == true)
             {
+                //Debug.Log("Shoots");
                 StartCoroutine(FireBullet(ShootSpeed));
             }
-        }
-        
+        }        
 
         
-
 	}
 
+   
+
+    //Method to fire a bullet with a time delay before the next shot can be fired
     private IEnumerator FireBullet(float speed)
     {
         CanFire = false;
@@ -113,6 +148,7 @@ public class EnemyScript : MonoBehaviour
         CanFire = true;
     }
 
+    //Basic movement towards the player (Replace with actual movement later)
     private void Movement()
     {
         transform.position = new Vector3((transform.position.x + transform.forward.x * EnemySpeed), 
@@ -122,6 +158,7 @@ public class EnemyScript : MonoBehaviour
        
     }
 
+    //Basic movement using preset nodes. Ignores the current and last nodes when making a decision
     private void NodeMovement()
     {
         float minDistance = 1000;
@@ -157,21 +194,49 @@ public class EnemyScript : MonoBehaviour
         //if player bullet and within a small distance IE not already hit then do this etc etc
         if (collision.gameObject.CompareTag("PlayerBullet"))
         {
-            Health--;
-            Destroy(collision.gameObject);
-
-            if (Health <= 0)
+            if (eCurrentState != eEnemyState.Disabled)
             {
-                sGameManager.EnemiesLeft--;
-                Destroy(this.gameObject);
-                            
-            }
+                Health--;
+                collision.gameObject.GetComponent<BulletScript>().ReturnToPool();
 
-            if (this.gameObject.tag == "Medium Enemy")
-                sGameManager.Score += 300;
-            else
-                sGameManager.Score += 100;
+                if (Health <= 0)
+                {                  
+                    sGameManager.EnemiesLeft--;
+                    ReturnToPool();
+
+                    if (this.gameObject.tag == "Medium Enemy")
+                        sGameManager.Score += 300;
+                    else
+                        sGameManager.Score += 100;
+                }
+            }
+            
         }
       
+    }
+
+    public void FetchFromPool(Vector3 spawnPoint)
+    {
+        this.gameObject.SetActive(true);
+
+        eCurrentState = eEnemyState.SeekingNode;
+        transform.position = spawnPoint;
+        
+    }
+
+    public void ReturnToPool()
+    {
+        eCurrentState = eEnemyState.Disabled;
+
+        if (gameObject.tag == "Medium Enemy")
+            sEnemyGen.gMediumEnemy.Add(this);
+        else if (gameObject.tag == "Enemy")
+            sEnemyGen.gLightEnemy.Add(this);
+
+        this.gameObject.SetActive(false);
+
+        
+
+        gameObject.transform.position = sEnemyGen.transform.position;
     }
 }

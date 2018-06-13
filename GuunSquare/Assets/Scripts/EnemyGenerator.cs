@@ -7,8 +7,8 @@ public class EnemyGenerator : MonoBehaviour
     Vector3[] SpawnPoints;
     public List<GameObject> Enemies;
 
-    public GameObject gLightEnemy;
-    public GameObject gMediumEnemy;
+    public List<EnemyScript> gLightEnemy;
+    public List<EnemyScript> gMediumEnemy;
     public GameObject gHeavyEnemy;
 
     // Use this for initialization
@@ -35,6 +35,7 @@ public class EnemyGenerator : MonoBehaviour
 		
 	}
 
+    //to do - Track what spawn points are used to make sure enemies are spread properly
     public bool SpawnWave(int level, int LightEnemy, int MediumEnemy, int HeavyEnemy)
     {
         int EnemiesSpawned = 0;
@@ -43,8 +44,10 @@ public class EnemyGenerator : MonoBehaviour
         {
             int random = Random.Range(0, 8);
 
-            Instantiate<GameObject>(gLightEnemy, SpawnPoints[random], Quaternion.identity);
-            //spawn enemy properly
+
+            SpawnLightEnemy(SpawnPoints[random]);
+            //Instantiate<GameObject>(gLightEnemy, SpawnPoints[random], Quaternion.identity);
+            
             EnemiesSpawned++;
         }
 
@@ -52,15 +55,31 @@ public class EnemyGenerator : MonoBehaviour
         {
             int random = Random.Range(0, 8);
 
-            Instantiate<GameObject>(gMediumEnemy, SpawnPoints[random], Quaternion.identity);
+
+            SpawnMediumEnemy(SpawnPoints[random]);
+            //Instantiate<GameObject>(gMediumEnemy, SpawnPoints[random], Quaternion.identity);
             EnemiesSpawned++;
         }
         for (int i = 0; i < HeavyEnemy; i++)
         {
-            Instantiate<GameObject>(gHeavyEnemy, SpawnPoints[EnemiesSpawned], Quaternion.identity);
+            //To do when Boss Enemies are implemented
             EnemiesSpawned++;
         }
-
+        
         return false;
+    }
+    
+    void SpawnLightEnemy(Vector3 spawnPoint)
+    {
+        gLightEnemy[0].FetchFromPool(spawnPoint);     
+
+        gLightEnemy.Remove(gLightEnemy[0]);
+    }
+
+    void SpawnMediumEnemy(Vector3 spawnPoint)
+    {
+        gMediumEnemy[0].FetchFromPool(spawnPoint);
+
+        gMediumEnemy.Remove(gMediumEnemy[0]);
     }
 }

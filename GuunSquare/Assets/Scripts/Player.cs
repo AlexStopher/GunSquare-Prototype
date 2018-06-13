@@ -40,54 +40,60 @@ public class Player : MonoBehaviour
 	void Update ()
     {
 
-        //if (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.W))
-        //{
-        //    rPlayer.MovePosition(transform.position + new Vector3(-0.5f, 0.0f, 0.5f) * 0.75f);
-        //}
-        //else if (Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.W))
-        //{
-        //    rPlayer.MovePosition(transform.position + new Vector3(0.5f, 0.0f, 0.5f) * 0.75f);
-        //}
-        //else if (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.S))
-        //{
-        //    rPlayer.MovePosition(transform.position + new Vector3(-0.5f, 0.0f, -0.5f) * 0.75f);
-        //}
-        //else if (Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.S))
-        //{
-        //    rPlayer.MovePosition(transform.position + new Vector3(0.5f, 0.0f, -0.5f) * 0.75f);
-        //}
-        //else if (Input.GetKey(KeyCode.W))
-        //{
-        //    rPlayer.MovePosition(transform.position + Vector3.forward * 0.5f);
-        //}
-        //else if (Input.GetKey(KeyCode.S))
-        //{
-        //    transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - 0.1f);
-        //}
-        //else if (Input.GetKey(KeyCode.D))
-        //{
-        //    rPlayer.MovePosition(transform.position + Vector3.right * 0.5f);
-        //}
-        //else if (Input.GetKey(KeyCode.A))
-        //{
-        //    rPlayer.MovePosition(transform.position + Vector3.left * 0.5f);
-        //}
-
-        rPlayer.MovePosition(transform.position + new Vector3(Input.GetAxis("HorizontalLeft"), 0, -Input.GetAxis("VerticalLeft")) * Speed);
-
-        Target = new Vector3(transform.position.x + Input.GetAxis("HorizontalRight"), transform.position.y, transform.position.z + -Input.GetAxis("VerticalRight"));
-
-        transform.LookAt(Target, Vector3.up);
-
-        if(Input.GetKey(KeyCode.E) && CanFire == true)
+        if (Health > 0)
         {
-            StartCoroutine(FireWeapon());
-        }
+            //if (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.W))
+            //{
+            //    rPlayer.MovePosition(transform.position + new Vector3(-0.5f, 0.0f, 0.5f) * 0.75f);
+            //}
+            //else if (Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.W))
+            //{
+            //    rPlayer.MovePosition(transform.position + new Vector3(0.5f, 0.0f, 0.5f) * 0.75f);
+            //}
+            //else if (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.S))
+            //{
+            //    rPlayer.MovePosition(transform.position + new Vector3(-0.5f, 0.0f, -0.5f) * 0.75f);
+            //}
+            //else if (Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.S))
+            //{
+            //    rPlayer.MovePosition(transform.position + new Vector3(0.5f, 0.0f, -0.5f) * 0.75f);
+            //}
+            //else if (Input.GetKey(KeyCode.W))
+            //{
+            //    rPlayer.MovePosition(transform.position + Vector3.forward * 0.5f);
+            //}
+            //else if (Input.GetKey(KeyCode.S))
+            //{
+            //    transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - 0.1f);
+            //}
+            //else if (Input.GetKey(KeyCode.D))
+            //{
+            //    rPlayer.MovePosition(transform.position + Vector3.right * 0.5f);
+            //}
+            //else if (Input.GetKey(KeyCode.A))
+            //{
+            //    rPlayer.MovePosition(transform.position + Vector3.left * 0.5f);
+            //}
 
-        if(Input.GetAxis("RightTrigger") <= -0.1 && CanFire == true)
-        {
-            audioShotSound.PlayOneShot(Bulletsound);
-            StartCoroutine(FireWeapon());
+            //if (Input.GetKey(KeyCode.E) && CanFire == true)
+            //{
+            //    StartCoroutine(FireWeapon());
+            //}
+
+            //Player movement based off of left analogue stick position
+            rPlayer.MovePosition(transform.position + new Vector3(Input.GetAxis("HorizontalLeft"), 0, -Input.GetAxis("VerticalLeft")) * Speed);
+
+            //Set a point to look at based off of right analogue stick movement
+            Target = new Vector3(transform.position.x + Input.GetAxis("HorizontalRight"), transform.position.y, transform.position.z + -Input.GetAxis("VerticalRight"));
+
+            transform.LookAt(Target, Vector3.up);
+
+
+            if (Input.GetAxis("RightTrigger") <= -0.1 && CanFire == true)
+            {
+                audioShotSound.PlayOneShot(Bulletsound);
+                StartCoroutine(FireWeapon());
+            }
         }
 
     }
@@ -161,7 +167,7 @@ public class Player : MonoBehaviour
     {
         if(collision.gameObject.CompareTag("EnemyBullet"))
         {
-            Destroy(collision.gameObject);
+            collision.gameObject.GetComponent<BulletScript>().ReturnToPool();
             Health--;
 
             HealthBar[Health].material.SetColor("_Color", Color.red);

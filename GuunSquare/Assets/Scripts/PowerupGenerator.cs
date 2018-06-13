@@ -13,8 +13,9 @@ public class PowerupGenerator : MonoBehaviour
 
     public void SpawnPowerup()
     {
-        //PowerupList.Length
-        //Spawn random powerup
+        //Replace this with object pooling, if one power up is active then it cannot be on the screen twice etc etc
+      
+        //Spawn random powerup and place it within a random zone
         int i = Random.Range(0, PowerupList.Length);
         int j = Random.Range(-10, 10);
         int k = Random.Range(-10,10);

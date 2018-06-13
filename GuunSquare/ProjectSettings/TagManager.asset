@@ -18,6 +18,8 @@ TagManager:
   - ShootSpeedPickup
   - Nodes
   - Medium Enemy
+  - Enemy Generator
+  - Bullet Generator
   layers:
   - Default
   - TransparentFX

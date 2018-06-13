@@ -6,12 +6,14 @@ public class BulletScript : MonoBehaviour
 {
     Rigidbody rBullet;
     public float Speed = 0.15f;
+    BulletManager sBulletManager;
     
 	// Use this for initialization
 	void Start ()
     {
         rBullet = GetComponent<Rigidbody>();
-       
+        sBulletManager = GameObject.FindGameObjectWithTag("Bullet Generator").GetComponent<BulletManager>();
+
     }
 	
 	// Update is called once per frame
@@ -27,7 +29,7 @@ public class BulletScript : MonoBehaviour
     {
         if (other.gameObject.CompareTag("ProjectileBoundary"))
         {
-            Destroy(this.gameObject);
+            ReturnToPool();
         }
     }
 
@@ -42,5 +44,19 @@ public class BulletScript : MonoBehaviour
             Physics.IgnoreCollision(collision.collider, GetComponent<Collider>());
         }
 
+    }
+
+    public void ReturnToPool()
+    {
+        if(gameObject.tag == "PlayerBullet")
+        {
+            gameObject.SetActive(false);
+            sBulletManager.lPlayerBullet.Add(this);
+        }
+        else
+        {
+            gameObject.SetActive(false);
+            sBulletManager.lEnemyBullet.Add(this);
+        }
     }
 }
