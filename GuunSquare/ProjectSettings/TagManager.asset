@@ -14,12 +14,15 @@ TagManager:
   - HealthPickup
   - SpeedPickup
   - ShootPowerup
-  - FireRatePickup
   - ShootSpeedPickup
   - Nodes
   - Medium Enemy
   - Enemy Generator
   - Bullet Generator
+  - Sound Manager
+  - ShieldPickup
+  - FireRatePickup
+  - Chasing Enemy
   layers:
   - Default
   - TransparentFX

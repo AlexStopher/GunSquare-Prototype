@@ -7,6 +7,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
 
+    public int Level;
     public int EnemiesLeft;
     public EnemyGenerator sEnemyGen;
     public PowerupGenerator sPowerupGenerator;
@@ -14,7 +15,7 @@ public class GameManager : MonoBehaviour
     public Text tHighScore;
     public Text tCurrentScore;
     public Player sPlayer;
-
+    
     public int Score;
     int HighScore;
 
@@ -29,6 +30,7 @@ public class GameManager : MonoBehaviour
 	// Use this for initialization
 	void Start ()
     {
+        Level = 0;
         eGameManagerState = eGameState.Running;
 
         if (PlayerPrefs.HasKey("HighScore"))
@@ -41,15 +43,40 @@ public class GameManager : MonoBehaviour
       
         if (eGameManagerState == eGameState.Running)
         {
-
+            //Future implementation - Read from a file to generate enemy numbers based on level
 
             if (EnemiesLeft <= 0)
             {
-                sEnemyGen.SpawnWave(1, 7, 2, 0);
-                EnemiesLeft = 9;
-                //Spawn random item drop
-                sPowerupGenerator.SpawnPowerup();
+                //for now do hard set levels, change this to be different for levels of x multiple
+                    if (Level < 3)
+                    {
+                        sEnemyGen.SpawnWave(Level, 9, 0, 0);
+                        EnemiesLeft = 9;
 
+                        //Spawn random item drop
+                        sPowerupGenerator.SpawnPowerup();
+                    }
+                    else if (Level > 2 && Level < 6)
+                    {
+                        sEnemyGen.SpawnWave(Level, 7, 2, 0);
+                        EnemiesLeft = 9;
+
+                        //Spawn random item drop
+                        sPowerupGenerator.SpawnPowerup();
+                    }
+                    else
+                    {
+                        int tempLight = Random.Range(0, 7);
+                    
+                    sEnemyGen.SpawnWave(Level, tempLight, 2, (7 - tempLight));
+
+                    EnemiesLeft = 9;
+
+                    //Spawn random item drop
+                    sPowerupGenerator.SpawnPowerup();
+                }
+
+                Level++;
             }
 
             if (sPlayer.Health <= 0)

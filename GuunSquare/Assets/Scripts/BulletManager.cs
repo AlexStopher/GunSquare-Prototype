@@ -19,7 +19,7 @@ public class BulletManager : MonoBehaviour
             lEnemyBullet[i].gameObject.SetActive(false);
         }
 
-        for(int i = 0; i < 30; i++)
+        for(int i = 0; i < 50; i++)
         {
             lPlayerBullet.Add(Instantiate(PlayerBullet, this.transform).GetComponent<BulletScript>());
             lPlayerBullet[i].gameObject.SetActive(false);

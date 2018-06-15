@@ -9,14 +9,18 @@ public class EnemyScript : MonoBehaviour
     public Transform PlayerTarget;
     public int Timer;
     bool CanFire;
-    public int CurrentPosition = 100;
-    public int LastPosition = 100;
+    public int CurrentPosition;
+    public int LastPosition;
     public int Health;
+    public MeshRenderer Shield;
 
     public List<BulletGenerator> sBullGen;
     NodeManager sNodeManager;
     public GameManager sGameManager;
+    public SoundManager sSoundManager;
     public EnemyGenerator sEnemyGen;
+    public AudioClip ClipDestroySound;
+    AudioSource audioEnemyOutput;
 
     public float EnemySpeed;
     public float ShootSpeed;
@@ -29,6 +33,7 @@ public class EnemyScript : MonoBehaviour
         SeekingNode,
         Moving,
         Stationary,
+        Chasing,
         Disabled
 
     };
@@ -37,21 +42,27 @@ public class EnemyScript : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        CurrentPosition = 100;
+        LastPosition = 100;
+
         //EnemySpeed = 0.05f;
         PlayerTarget = GameObject.FindGameObjectWithTag("Player").transform;
         sGameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+        sSoundManager = GameObject.FindGameObjectWithTag("Sound Manager").GetComponent<SoundManager>();
         sNodeManager = GameObject.FindGameObjectWithTag("Nodes").GetComponent<NodeManager>();
         sEnemyGen = GameObject.FindGameObjectWithTag("Enemy Generator").GetComponent<EnemyGenerator>();
+        
         CanFire = true;
 
         //if light no seekingnodes
-        if (gameObject.tag == "Medium Enemy")
+        if (gameObject.CompareTag("Medium Enemy"))
         {
             eCurrentState = eEnemyState.SeekingNode;
             Health = 3;
         }
-        else if (gameObject.tag == "Enemy")
+        else if (gameObject.CompareTag("Enemy"))
         {
+            eCurrentState = eEnemyState.Moving;
             Health = 1;
         }
 
@@ -61,15 +72,23 @@ public class EnemyScript : MonoBehaviour
     {
         CanFire = true;
 
-        if (gameObject.tag == "Medium Enemy")
+        if (gameObject.CompareTag("Medium Enemy"))
         {
             eCurrentState = eEnemyState.SeekingNode;
             Health = 3;
         }
-        else if (gameObject.tag == "Enemy")
+        else if (gameObject.CompareTag("Enemy"))
         {
+            eCurrentState = eEnemyState.Moving;
             Health = 1;
         }
+        else if (gameObject.CompareTag("Chasing Enemy"))
+        {
+            eCurrentState = eEnemyState.Chasing;
+            Health = 1;
+        }
+
+
     }
 
     // Update is called once per frame
@@ -78,7 +97,7 @@ public class EnemyScript : MonoBehaviour
 
         
 
-        if (gameObject.tag == "Medium Enemy")
+        if (gameObject.CompareTag("Medium Enemy"))
         {
             
             //Enemy states 
@@ -116,8 +135,14 @@ public class EnemyScript : MonoBehaviour
 
 
         }
+        else if(eCurrentState == eEnemyState.Chasing)
+        {
+            transform.LookAt(PlayerTarget);
+            Movement();
+        }
         else
         {
+            //change this to chasing to clean up the enemy behaviour and make it more consistent
             transform.LookAt(PlayerTarget);
 
             if (Vector3.Distance(transform.position, PlayerTarget.position) > 4)
@@ -194,17 +219,24 @@ public class EnemyScript : MonoBehaviour
         //if player bullet and within a small distance IE not already hit then do this etc etc
         if (collision.gameObject.CompareTag("PlayerBullet"))
         {
-            if (eCurrentState != eEnemyState.Disabled)
+            if(eCurrentState != eEnemyState.Disabled
+                && Shield.enabled == true)
+            {
+                Shield.enabled = false;
+                collision.gameObject.GetComponent<BulletScript>().ReturnToPool();
+            }
+            else if(eCurrentState != eEnemyState.Disabled)
             {
                 Health--;
                 collision.gameObject.GetComponent<BulletScript>().ReturnToPool();
 
                 if (Health <= 0)
-                {                  
+                {
+                    sSoundManager.PlaySound(ClipDestroySound);
                     sGameManager.EnemiesLeft--;
                     ReturnToPool();
 
-                    if (this.gameObject.tag == "Medium Enemy")
+                    if (this.gameObject.CompareTag("Medium Enemy"))
                         sGameManager.Score += 300;
                     else
                         sGameManager.Score += 100;
@@ -212,6 +244,15 @@ public class EnemyScript : MonoBehaviour
             }
             
         }
+        else if(collision.gameObject.CompareTag("Player") && gameObject.CompareTag("Chasing Enemy"))
+        {
+            Health = 0;
+
+            sSoundManager.PlaySound(ClipDestroySound);
+            sGameManager.EnemiesLeft--;
+            ReturnToPool();
+        }
+        
       
     }
 
@@ -219,7 +260,6 @@ public class EnemyScript : MonoBehaviour
     {
         this.gameObject.SetActive(true);
 
-        eCurrentState = eEnemyState.SeekingNode;
         transform.position = spawnPoint;
         
     }
@@ -228,10 +268,12 @@ public class EnemyScript : MonoBehaviour
     {
         eCurrentState = eEnemyState.Disabled;
 
-        if (gameObject.tag == "Medium Enemy")
-            sEnemyGen.gMediumEnemy.Add(this);
-        else if (gameObject.tag == "Enemy")
-            sEnemyGen.gLightEnemy.Add(this);
+        if (gameObject.CompareTag("Chasing Enemy"))
+            sEnemyGen.lChasingEnemy.Add(this);
+        else if (gameObject.CompareTag("Medium Enemy"))
+            sEnemyGen.lMediumEnemy.Add(this);
+        else if (gameObject.CompareTag("Enemy"))
+            sEnemyGen.lLightEnemy.Add(this);
 
         this.gameObject.SetActive(false);
 

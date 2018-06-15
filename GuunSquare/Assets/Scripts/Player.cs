@@ -24,7 +24,8 @@ public class Player : MonoBehaviour
     public Vector3 Target;
     public List<BulletGenerator> sBulGen;
     public MeshRenderer[] HealthBar;
-    AudioSource audioShotSound;
+    public MeshRenderer Shield;
+    AudioSource audioOutput;
     public AudioClip Bulletsound;
     
 
@@ -33,7 +34,8 @@ public class Player : MonoBehaviour
     {
         rPlayer = GetComponent<Rigidbody>();
         Speed = 0.2f;
-        audioShotSound = GetComponent<AudioSource>();
+        audioOutput = GetComponent<AudioSource>();
+        
     }
 	
 	// Update is called once per frame
@@ -81,17 +83,17 @@ public class Player : MonoBehaviour
             //}
 
             //Player movement based off of left analogue stick position
-            rPlayer.MovePosition(transform.position + new Vector3(Input.GetAxis("HorizontalLeft"), 0, -Input.GetAxis("VerticalLeft")) * Speed);
+            rPlayer.MovePosition(transform.position + new Vector3(Input.GetAxis("HorizontalLeft"), 0, Input.GetAxis("VerticalLeft")) * Speed);
 
             //Set a point to look at based off of right analogue stick movement
-            Target = new Vector3(transform.position.x + Input.GetAxis("HorizontalRight"), transform.position.y, transform.position.z + -Input.GetAxis("VerticalRight"));
+            Target = new Vector3(transform.position.x + Input.GetAxis("HorizontalRight"), transform.position.y, transform.position.z + Input.GetAxis("VerticalRight"));
 
             transform.LookAt(Target, Vector3.up);
 
 
             if (Input.GetAxis("RightTrigger") <= -0.1 && CanFire == true)
             {
-                audioShotSound.PlayOneShot(Bulletsound);
+                audioOutput.PlayOneShot(Bulletsound);
                 StartCoroutine(FireWeapon());
             }
         }
@@ -138,10 +140,9 @@ public class Player : MonoBehaviour
 
             Destroy(other.gameObject);
         }
-        else if (other.CompareTag("FireRatePickup"))
+        else if (other.CompareTag("ShieldPickup"))
         {
-            if (RateOfFire > 0.5f)
-                RateOfFire -= 0.1f;
+            Shield.enabled = true;
 
             Destroy(other.gameObject);
         }
@@ -168,10 +169,25 @@ public class Player : MonoBehaviour
         if(collision.gameObject.CompareTag("EnemyBullet"))
         {
             collision.gameObject.GetComponent<BulletScript>().ReturnToPool();
-            Health--;
+
+            if (Shield.enabled == true)
+            {
+                Shield.enabled = false;
+            }
+            else
+            {
+                if(Health > 0)
+                    Health--;
+
+                HealthBar[Health].material.SetColor("_Color", Color.red);
+            }
+        }
+        else if(collision.gameObject.CompareTag("Chasing Enemy"))
+        {
+            if (Health > 0)
+                Health--;
 
             HealthBar[Health].material.SetColor("_Color", Color.red);
-
         }
     }
 
