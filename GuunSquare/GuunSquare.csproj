@@ -79,6 +79,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\ChangeText.cs" />
+    <Compile Include="Assets\Scripts\BossEnemy.cs" />
     <Compile Include="Assets\Scripts\BulletGenerator.cs" />
     <Compile Include="Assets\Scripts\BulletManager.cs" />
     <Compile Include="Assets\Scripts\BulletScript.cs" />
@@ -88,6 +90,7 @@
     <Compile Include="Assets\Scripts\IPoolableObject.cs" />
     <Compile Include="Assets\Scripts\LoadScene.cs" />
     <Compile Include="Assets\Scripts\NodeManager.cs" />
+    <Compile Include="Assets\Scripts\Options.cs" />
     <Compile Include="Assets\Scripts\Player.cs" />
     <Compile Include="Assets\Scripts\PowerupGenerator.cs" />
     <Compile Include="Assets\Scripts\SoundManager.cs" />

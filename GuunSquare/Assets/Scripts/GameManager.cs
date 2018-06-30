@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
 	// Use this for initialization
 	void Start ()
     {
-        Level = 0;
+        //Level = 0;
         eGameManagerState = eGameState.Running;
 
         if (PlayerPrefs.HasKey("HighScore"))
@@ -48,32 +48,54 @@ public class GameManager : MonoBehaviour
             if (EnemiesLeft <= 0)
             {
                 //for now do hard set levels, change this to be different for levels of x multiple
-                    if (Level < 3)
-                    {
-                        sEnemyGen.SpawnWave(Level, 9, 0, 0);
-                        EnemiesLeft = 9;
+                //Change magic numbers later
+                if (Level <= 3)
+                {
+                    //Spawn the wave
+                    sEnemyGen.SpawnWave(Level, 9, 0, 0);
+                    EnemiesLeft = 9;
 
-                        //Spawn random item drop
+                    //Spawn random item drop
+                    if(Level % 2 == 0)
                         sPowerupGenerator.SpawnPowerup();
-                    }
-                    else if (Level > 2 && Level < 6)
-                    {
-                        sEnemyGen.SpawnWave(Level, 7, 2, 0);
-                        EnemiesLeft = 9;
+                }
+                else if (Level > 3 && Level <= 6)
+                {
+                    //Spawn the wave
+                    sEnemyGen.SpawnWave(Level, 7, 2, 0);
+                    EnemiesLeft = 9;
 
-                        //Spawn random item drop
+                    //Spawn random item drop
+                    if (Level % 2 == 0)
                         sPowerupGenerator.SpawnPowerup();
-                    }
-                    else
-                    {
-                        int tempLight = Random.Range(0, 7);
-                    
+                }
+                else if(Level % 7 == 0)
+                {
+                    //Spawn the wave
+                    sEnemyGen.SpawnWave(Level, 0, 0, 9);
+                    EnemiesLeft = 9;
+
+                    //Spawn random item drop                    
+                    sPowerupGenerator.SpawnPowerup();
+                }
+                else if (Level % 10 == 0)
+                {
+                    sEnemyGen.SpawnBoss();
+                    EnemiesLeft = 1;
+                }
+                else
+                {
+                    //Number of enemies that will be light, decides the remaining chasing enemies
+                    int tempLight = Random.Range(0, 7);
+
+                    //Spawn the wave
                     sEnemyGen.SpawnWave(Level, tempLight, 2, (7 - tempLight));
 
                     EnemiesLeft = 9;
 
                     //Spawn random item drop
-                    sPowerupGenerator.SpawnPowerup();
+                    if (Level % 2 == 0)
+                        sPowerupGenerator.SpawnPowerup();
                 }
 
                 Level++;

@@ -232,6 +232,6 @@ MonoBehaviour:
   sSoundManager: {fileID: 0}
   sEnemyGen: {fileID: 0}
   ClipDestroySound: {fileID: 8300000, guid: a169fd4ab3a9fc940978901e1ec1099e, type: 3}
-  EnemySpeed: 0.2
+  EnemySpeed: 0.15
   ShootSpeed: 0
   eCurrentState: 3

@@ -7,9 +7,13 @@ public class EnemyGenerator : MonoBehaviour
     public List<Vector3> lSpawnPoints;
     public List<Vector3> lUsedSpawnPoints;
 
+    //Replace!
+  
+
     public List<EnemyScript> lLightEnemy;
     public List<EnemyScript> lMediumEnemy;
     public List<EnemyScript> lChasingEnemy;
+    public List<BossEnemy> lBossEnemy;
 
     // Use this for initialization
     void Start ()
@@ -93,6 +97,13 @@ public class EnemyGenerator : MonoBehaviour
 
 
         return false;
+    }
+
+    public void SpawnBoss()
+    {
+        //fetch from pool etc etc - to implement
+        lBossEnemy[0].FetchFromPool();
+
     }
     
     void SpawnLightEnemy(Vector3 spawnPoint, int level)

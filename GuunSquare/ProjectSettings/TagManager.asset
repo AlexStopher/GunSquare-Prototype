@@ -23,6 +23,9 @@ TagManager:
   - ShieldPickup
   - FireRatePickup
   - Chasing Enemy
+  - Powerup Generator
+  - Options
+  - Boss
   layers:
   - Default
   - TransparentFX

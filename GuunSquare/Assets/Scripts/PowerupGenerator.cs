@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PowerupGenerator : MonoBehaviour
 {
-    public GameObject[] PowerupList;
+    public List<GameObject> lPowerup;
 	// Use this for initialization
 	void Start ()
     {
@@ -13,13 +13,24 @@ public class PowerupGenerator : MonoBehaviour
 
     public void SpawnPowerup()
     {
-        //Replace this with object pooling, if one power up is active then it cannot be on the screen twice etc etc
-      
-        //Spawn random powerup and place it within a random zone
-        int i = Random.Range(0, PowerupList.Length);
-        int j = Random.Range(-10, 10);
-        int k = Random.Range(-10,10);
 
-        Instantiate<GameObject>(PowerupList[i], new Vector3(j, 1, k), Quaternion.identity);
+
+        //Spawn random powerup and place it within a random zone
+        if (lPowerup.Count > 0)
+        {
+            int i = Random.Range(0, lPowerup.Count);
+            int j = Random.Range(-10, 10);
+            int k = Random.Range(-10, 8);
+
+            FetchFromPool(new Vector3(j, 1, k), i);
+        }
+    }
+
+    void FetchFromPool(Vector3 position, int item)
+    {
+        lPowerup[item].SetActive(true);
+        lPowerup[item].transform.position = position;
+
+        lPowerup.Remove(lPowerup[item]);
     }
 }
