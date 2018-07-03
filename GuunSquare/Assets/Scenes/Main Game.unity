@@ -241,6 +241,11 @@ Transform:
   m_PrefabParentObject: {fileID: 4379747209747740, guid: 0cb2e17d06d574740bd59c775a3e5b64,
     type: 2}
   m_PrefabInternal: {fileID: 1087306139}
+--- !u!4 &40560174 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 4049617296574802, guid: 68881cad7fdf8134aa694be04146b7ee,
+    type: 2}
+  m_PrefabInternal: {fileID: 1263051671}
 --- !u!1 &58264825
 GameObject:
   m_ObjectHideFlags: 0
@@ -1437,7 +1442,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: -0.000015258789}
 --- !u!1001 &740489637
 Prefab:
@@ -2392,7 +2397,7 @@ AudioSource:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1175919502}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 24300002, guid: ddd7fac4de74ce240bdf3c71ea9f3e8a,
     type: 2}
@@ -2762,7 +2767,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4049617296574802, guid: 68881cad7fdf8134aa694be04146b7ee, type: 2}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4109489817491550, guid: 68881cad7fdf8134aa694be04146b7ee, type: 2}
       propertyPath: m_LocalPosition.y
@@ -2783,6 +2788,11 @@ Prefab:
       propertyPath: Speed
       value: 0.2
       objectReference: {fileID: 0}
+    - target: {fileID: 114346674104096402, guid: 68881cad7fdf8134aa694be04146b7ee,
+        type: 2}
+      propertyPath: AmmoBar
+      value: 
+      objectReference: {fileID: 1343871840}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 68881cad7fdf8134aa694be04146b7ee, type: 2}
   m_IsPrefabParent: 0
@@ -2938,6 +2948,88 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 1263051671}
   m_Script: {fileID: 11500000, guid: 479367b9d2446104e85eeb6ab0377f4a, type: 3}
+--- !u!1 &1343871838
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1343871839}
+  - component: {fileID: 1343871842}
+  - component: {fileID: 1343871841}
+  - component: {fileID: 1343871840}
+  m_Layer: 0
+  m_Name: Test Ammo Bar
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1343871839
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1343871838}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.545, y: 0.547, z: 0.207}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 40560174}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!23 &1343871840
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1343871838}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_Materials:
+  - {fileID: 2100000, guid: 6185fa7b989f84d4f8c4d7f720b02d79, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_PreserveUVs: 1
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+--- !u!65 &1343871841
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1343871838}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!33 &1343871842
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1343871838}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &1386628684
 GameObject:
   m_ObjectHideFlags: 0

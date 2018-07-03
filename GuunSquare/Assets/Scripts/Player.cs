@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    //This enum is used for the power level of the weapons in game
     public enum eItemLevels
     {
         Level1,
         Level2,
         Level3,
-        Level4
     }
 
     Rigidbody rPlayer;
@@ -21,6 +21,7 @@ public class Player : MonoBehaviour
     public float RateOfFire = 1.0f;
     public float ShotSpeed;
 
+    int mGunAmmo;
     bool mGunPoweredUp;
     float mGunTimer;
 
@@ -28,6 +29,7 @@ public class Player : MonoBehaviour
     public List<BulletGenerator> sBulGen;
     public MeshRenderer[] HealthBar;
     public MeshRenderer Shield;
+    public MeshRenderer AmmoBar; 
 
     Options sOptions;
     PowerupGenerator sPowerUps;
@@ -46,11 +48,13 @@ public class Player : MonoBehaviour
 
         mGunPoweredUp = false;
         mGunTimer = 5.0f;
+        mGunAmmo = 0;
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
+        mGunPoweredUp = false;
 
         if (Health > 0)
         {
@@ -109,6 +113,17 @@ public class Player : MonoBehaviour
 
                 transform.LookAt(Target, Vector3.up);
 
+                if (Input.GetMouseButton(1))
+                {
+                    Speed = 0.1f;
+                    //Raycast effects go here
+                    if (mGunAmmo > 0)
+                        mGunPoweredUp = true;
+                }
+                else
+                {
+                    Speed = 0.2f;
+                }
 
                 if (Input.GetMouseButton(0) && CanFire == true)
                 {
@@ -131,56 +146,86 @@ public class Player : MonoBehaviour
 
                 transform.LookAt(Target, Vector3.up);
 
+                //Check to see if the player is pressing the left trigger to enter the slower powered mode
+                if(Input.GetAxis("LeftTrigger") >= 0.1f)
+                {
+                    Speed = 0.1f;
+                    //Raycast effects go here
+                    if (mGunAmmo > 0)
+                        mGunPoweredUp = true;
+                }
+                else
+                {
+                    Speed = 0.2f;
+                }
 
-                if ((Input.GetAxis("RightTrigger") <= -0.1 || Input.GetAxis("RightTrigger2") <= -0.1) && CanFire == true)
+                //Starts a coroutine to shoot the bullets
+                if (Input.GetAxis("RightTrigger") >= 0.1f && CanFire == true)
                 {
                     audioOutput.PlayOneShot(Bulletsound);
                     StartCoroutine(FireWeapon());
                 }
+
+                //ammo mat colour fill = current ammo / max;
+                //apply mat colour accordingly
             }
 
-            //Timer before gun level drops
-            if(mGunPoweredUp == true)
-            {
-                mGunTimer -= Time.deltaTime;
-
-                if(mGunTimer <= 0)
-                {
-                    mGunPoweredUp = false;
-                    eGunLevel = eItemLevels.Level1;
-                    mGunTimer = 5.0f;
-                }
-            }
         }
+
+        
 
     }
 
+    //Coroutine that handles all of the firing of the bullet generators attached to the object based on data
     IEnumerator FireWeapon()
     {
         CanFire = false;
 
         
-        //Checks the current level of the gun to see what bullet generators to use
-        if (eGunLevel == eItemLevels.Level1)
+        //Checks the current level of the gun and player choices to see what bullet generators to use
+        if (eGunLevel == eItemLevels.Level1 || mGunPoweredUp == false)
         {
             sBulGen[0].ShootBullet();
         }
-        else if (eGunLevel == eItemLevels.Level2)
+        else if (eGunLevel == eItemLevels.Level2 && mGunPoweredUp)
         {
+            //Loop through the bullet generator scripts attached to this object
             for (int i = 0; i < 3; i++)
-                sBulGen[i].ShootBullet();
+            {
+                sBulGen[i].ShootBullet();               
+            }
+
+            mGunAmmo--;
+
+            //test code
+            if (mGunAmmo <= 0)
+                AmmoBar.material.SetColor("_Color", new Color(0.1f,0.1f,0.1f));
+
+            mGunPoweredUp = false;
         }
-        else if (eGunLevel == eItemLevels.Level3)
+        else if (eGunLevel == eItemLevels.Level3 && mGunPoweredUp)
         {
+            //Loop through the bullet generator scripts attached to this object
             for (int i = 0; i < 5; i++)
+            {
                 sBulGen[i].ShootBullet();
+            }
+
+            mGunAmmo--;
+
+            //test code
+            if (mGunAmmo <= 0)
+                AmmoBar.material.SetColor("_Color", new Color(0.1f, 0.1f, 0.1f));
+
+            mGunPoweredUp = false;
         }
-        else if (eGunLevel == eItemLevels.Level4)
-        {
-            //expand on this later
-            for (int i = 0; i < 5; i++)
-                sBulGen[i].ShootBullet();
-        }
+        //else if (eGunLevel == eItemLevels.Level4)
+        //{
+        //    //expand on this later - Needs more to be designed properly
+
+        //    for (int i = 0; i < 5; i++)
+        //        sBulGen[i].ShootBullet();
+        //}
 
         yield return new WaitForSeconds(RateOfFire);
         
@@ -198,10 +243,17 @@ public class Player : MonoBehaviour
     {
         if(other.CompareTag("PowerPickup"))
         {
-            if(eGunLevel <= eItemLevels.Level3)
+            if (eGunLevel <= eItemLevels.Level3)
+            {
                 eGunLevel++;
+                mGunAmmo = 10;
+            }
 
             mGunPoweredUp = true;
+
+            //Need to slowly empty this out over time
+            AmmoBar.material.SetColor("_Color", Color.red);
+
 
             ReturnPowerupToPool(other.gameObject);
         }

@@ -101,8 +101,9 @@ public class EnemyGenerator : MonoBehaviour
 
     public void SpawnBoss()
     {
-        //fetch from pool etc etc - to implement
+       
         lBossEnemy[0].FetchFromPool();
+        lBossEnemy.Remove(lBossEnemy[0]);
 
     }
     

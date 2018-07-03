@@ -3,16 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /*
-    This Boss class is a mess and needs to be cleaned up and optimised      
+    This Boss class is a mess, needs to be cleaned up and optimised      
 */
 
 public class BossEnemy : MonoBehaviour
 {
     public enum eBossPhase
     {
+        ePhaseSetup,
         ePhaseOne,
         ePhaseTwo,
-        ePhaseThree
+        ePhaseThree,
+        ePhaseFourTransform,
+        ePhaseFour
     };
     public float rot;
     public int mHealth;
@@ -50,56 +53,79 @@ public class BossEnemy : MonoBehaviour
     {
         rot = transform.eulerAngles.y;
 
-
-        if (eCurrentPhase == eBossPhase.ePhaseOne)
+        switch(eCurrentPhase)
         {
-            if(mTurningClockwise == true && transform.eulerAngles.y <= 270.0f)
-            {
-                transform.Rotate(new Vector3(0, mRotateSpeed, 0));
+            case eBossPhase.ePhaseSetup:
+                {
 
-                if(transform.eulerAngles.y >= 269.0f)
-                    mTurningClockwise = false;
-            }
-            else if(mTurningClockwise == false && transform.eulerAngles.y >= 90.0f)
-            {
-                transform.Rotate(new Vector3(0, -mRotateSpeed, 0));
 
-                Debug.Log("Gets Here");
+                    break;
+                }
+            case eBossPhase.ePhaseOne:
+                {
 
-                if (transform.eulerAngles.y <= 91.0f)
-                    mTurningClockwise = true;
-            }
+                    if (mTurningClockwise == true && transform.eulerAngles.y <= 270.0f)
+                    {
+                        transform.Rotate(new Vector3(0, mRotateSpeed, 0));
 
-            if (mHealth < 50)
-            {
-                eCurrentPhase = eBossPhase.ePhaseTwo;
+                        if (transform.eulerAngles.y >= 269.0f)
+                            mTurningClockwise = false;
+                    }
+                    else if (mTurningClockwise == false && transform.eulerAngles.y >= 90.0f)
+                    {
+                        transform.Rotate(new Vector3(0, -mRotateSpeed, 0));
 
-                //Change this to an animation into the second phase rather than a straight set rotation
-                transform.eulerAngles = new Vector3(0,180,0);
-            }
-        }
-        else if(eCurrentPhase == eBossPhase.ePhaseTwo)
-        {
-            if (mMovingLeft == true && transform.position.x >= -9.0f)
-            {
-                transform.position = new Vector3(transform.position.x - mMoveSpeed, transform.position.y, transform.position.z);
+                        Debug.Log("Gets Here");
 
-                if (transform.position.x < -8.2)
-                    mMovingLeft = false;
+                        if (transform.eulerAngles.y <= 91.0f)
+                            mTurningClockwise = true;
+                    }
 
-            }
-            else if (mMovingLeft == false && transform.position.x <= 9.0f)
-            {
-                transform.position = new Vector3(transform.position.x + mMoveSpeed, transform.position.y, transform.position.z);
+                    if (mHealth < 50)
+                    {
+                        eCurrentPhase = eBossPhase.ePhaseTwo;
 
-                if (transform.position.x > 8.2)
-                    mMovingLeft = true;
-            }
-        }
-        else if (eCurrentPhase == eBossPhase.ePhaseThree)
-        {
+                        //Change this to an animation into the second phase rather than a straight set rotation
+                        transform.eulerAngles = new Vector3(0, 180, 0);
+                    }
 
-        }
+                    break;
+                }
+            case eBossPhase.ePhaseTwo:
+                {
+                    if (mMovingLeft == true && transform.position.x >= -9.0f)
+                    {
+                        transform.position = new Vector3(transform.position.x - mMoveSpeed, transform.position.y, transform.position.z);
+
+                        if (transform.position.x < -8.2)
+                            mMovingLeft = false;
+
+                    }
+                    else if (mMovingLeft == false && transform.position.x <= 9.0f)
+                    {
+                        transform.position = new Vector3(transform.position.x + mMoveSpeed, transform.position.y, transform.position.z);
+
+                        if (transform.position.x > 8.2)
+                            mMovingLeft = true;
+                    }
+
+                    break;
+                }
+            case eBossPhase.ePhaseThree:
+                {
+                    break;
+                }
+            case eBossPhase.ePhaseFourTransform:
+                {
+                    break;
+                }
+            case eBossPhase.ePhaseFour:
+                {
+                    break;
+                }
+            default:
+                break;
+        }     
 
         if (mCanFire)
         {
@@ -129,6 +155,11 @@ public class BossEnemy : MonoBehaviour
         mCanFire = true;
     }
 
+    void Movement()
+    {
+
+    }
+
     public void FetchFromPool()
     {
         this.gameObject.SetActive(true);
@@ -141,6 +172,8 @@ public class BossEnemy : MonoBehaviour
     {
        
         this.gameObject.SetActive(false);
+
+        sEnemyGen.lBossEnemy.Add(this);
 
         gameObject.transform.position = sEnemyGen.transform.position;
 

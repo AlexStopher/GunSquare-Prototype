@@ -78,7 +78,8 @@ public class GameManager : MonoBehaviour
                     //Spawn random item drop                    
                     sPowerupGenerator.SpawnPowerup();
                 }
-                else if (Level % 10 == 0)
+                //else if (Level % 10 == 0)
+                else if(Level == 15)
                 {
                     sEnemyGen.SpawnBoss();
                     EnemiesLeft = 1;
