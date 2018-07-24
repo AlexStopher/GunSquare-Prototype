@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -11,7 +12,10 @@ public class GameManager : MonoBehaviour
     public int EnemiesLeft;
     public EnemyGenerator sEnemyGen;
     public PowerupGenerator sPowerupGenerator;
+    public EventSystem mEventSystem;
+    public Canvas uiPauseMenu;
     public Canvas uiEndGame;
+    public GameObject mEndGameButton;
     public Text tHighScore;
     public Text tCurrentScore;
     public Player sPlayer;
@@ -21,26 +25,31 @@ public class GameManager : MonoBehaviour
 
     eGameState eGameManagerState;
 
+    
     enum eGameState
     {
         Running,
+        Paused,
         Ended
     };
 
 	// Use this for initialization
 	void Start ()
     {
+        
         //Level = 0;
         eGameManagerState = eGameState.Running;
 
         if (PlayerPrefs.HasKey("HighScore"))
             HighScore = PlayerPrefs.GetInt("HighScore");
+
+        Time.timeScale = 1;
     }
 
     // Update is called once per frame
     void Update()
-    { 
-      
+    {
+
         if (eGameManagerState == eGameState.Running)
         {
             //Future implementation - Read from a file to generate enemy numbers based on level
@@ -56,7 +65,7 @@ public class GameManager : MonoBehaviour
                     EnemiesLeft = 9;
 
                     //Spawn random item drop
-                    if(Level % 2 == 0)
+                    if (Level % 2 == 0)
                         sPowerupGenerator.SpawnPowerup();
                 }
                 else if (Level > 3 && Level <= 6)
@@ -69,7 +78,7 @@ public class GameManager : MonoBehaviour
                     if (Level % 2 == 0)
                         sPowerupGenerator.SpawnPowerup();
                 }
-                else if(Level % 7 == 0)
+                else if (Level % 7 == 0)
                 {
                     //Spawn the wave
                     sEnemyGen.SpawnWave(Level, 0, 0, 9);
@@ -79,7 +88,7 @@ public class GameManager : MonoBehaviour
                     sPowerupGenerator.SpawnPowerup();
                 }
                 //else if (Level % 10 == 0)
-                else if(Level == 15)
+                else if (Level == 10)
                 {
                     sEnemyGen.SpawnBoss();
                     EnemiesLeft = 1;
@@ -105,10 +114,24 @@ public class GameManager : MonoBehaviour
             if (sPlayer.Health <= 0)
                 eGameManagerState = eGameState.Ended;
 
-            
+            if (sPlayer.mPaused == true)
+            {
+                eGameManagerState = eGameState.Paused;
+                uiPauseMenu.gameObject.SetActive(true);
+            }
+        }
+        else if (eGameManagerState == eGameState.Paused)
+        {
+            if (sPlayer.mPaused == false)
+            { 
+                eGameManagerState = eGameState.Running;
+                uiPauseMenu.gameObject.SetActive(false);
+            }
         }
         else if(eGameManagerState == eGameState.Ended)
         {
+            mEventSystem.SetSelectedGameObject(mEndGameButton);
+
             tCurrentScore.text = Score.ToString();
 
             if (HighScore >= Score)

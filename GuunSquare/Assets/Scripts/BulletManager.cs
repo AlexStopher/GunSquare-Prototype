@@ -6,12 +6,14 @@ public class BulletManager : MonoBehaviour
 {
     public GameObject PlayerBullet;
     public GameObject EnemyBullet;
+    public GameObject BossBullet;
 
     public List<BulletScript> lEnemyBullet;
     public List<BulletScript> lPlayerBullet;
+    public List<BulletScript> lBossBullet;
 
     // Use this for initialization
-    void Start()
+    void Awake()
     {
         for (int i = 0; i < 150; i++)
         {
@@ -25,11 +27,12 @@ public class BulletManager : MonoBehaviour
             lPlayerBullet[i].gameObject.SetActive(false);
         }
 
+        for(int i = 0; i < 30; i++)
+        {
+            lBossBullet.Add(Instantiate(BossBullet, this.transform).GetComponent<BulletScript>());
+            lBossBullet[i].gameObject.SetActive(false);
+        }
+
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 }

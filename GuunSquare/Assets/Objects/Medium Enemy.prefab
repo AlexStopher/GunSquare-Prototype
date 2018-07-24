@@ -518,7 +518,7 @@ MonoBehaviour:
   sGameManager: {fileID: 0}
   sSoundManager: {fileID: 0}
   sEnemyGen: {fileID: 0}
-  ClipDestroySound: {fileID: 0}
+  ClipDestroySound: {fileID: 8300000, guid: a169fd4ab3a9fc940978901e1ec1099e, type: 3}
   EnemySpeed: 0.1
   ShootSpeed: 0.2
   eCurrentState: 0
@@ -534,6 +534,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsPlayer: 0
+  IsBossBullet: 0
   Bullet: {fileID: 1828510334223830, guid: 5a96c9e652af1c048be8fb35c1d93f52, type: 2}
 --- !u!114 &114580784851232956
 MonoBehaviour:
@@ -547,6 +548,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsPlayer: 0
+  IsBossBullet: 0
   Bullet: {fileID: 1828510334223830, guid: 5a96c9e652af1c048be8fb35c1d93f52, type: 2}
 --- !u!136 &136262514912558580
 CapsuleCollider:

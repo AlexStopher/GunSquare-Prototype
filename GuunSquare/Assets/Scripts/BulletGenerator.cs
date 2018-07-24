@@ -5,6 +5,7 @@ using UnityEngine;
 public class BulletGenerator : MonoBehaviour
 {
     public bool IsPlayer;
+    public bool IsBossBullet;
     public GameObject Bullet;
     BulletManager sBulletManager;
 
@@ -12,16 +13,6 @@ public class BulletGenerator : MonoBehaviour
 	void Start ()
     {
         sBulletManager = GameObject.FindGameObjectWithTag("Bullet Generator").GetComponent<BulletManager>();
-	}
-	
-	// Update is called once per frame
-	void Update ()
-    {
-        //Get the next object from the pool
-
-        //Prototype code
-        
-
 	}
 
     public void ShootBullet()
@@ -32,6 +23,13 @@ public class BulletGenerator : MonoBehaviour
             sBulletManager.lPlayerBullet[0].gameObject.transform.rotation = this.transform.rotation;
             sBulletManager.lPlayerBullet[0].gameObject.SetActive(true);
             sBulletManager.lPlayerBullet.Remove(sBulletManager.lPlayerBullet[0]);
+        }
+        else if(IsBossBullet)
+        {
+            sBulletManager.lBossBullet[0].gameObject.transform.position = this.transform.position;
+            sBulletManager.lBossBullet[0].gameObject.transform.rotation = this.transform.rotation;
+            sBulletManager.lBossBullet[0].gameObject.SetActive(true);
+            sBulletManager.lBossBullet.Remove(sBulletManager.lBossBullet[0]);
         }
         else
         {

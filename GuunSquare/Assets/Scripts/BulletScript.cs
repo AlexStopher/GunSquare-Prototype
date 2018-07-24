@@ -39,7 +39,7 @@ public class BulletScript : MonoBehaviour
         {
             Physics.IgnoreCollision(collision.collider, GetComponent<Collider>());
         }
-        else if (collision.gameObject.CompareTag("PlayerBullet") || collision.gameObject.CompareTag("EnemyBullet"))
+        else if (collision.gameObject.CompareTag("PlayerBullet") || collision.gameObject.CompareTag("EnemyBullet") || collision.gameObject.CompareTag("Boss Bullet"))
         {
             Physics.IgnoreCollision(collision.collider, GetComponent<Collider>());
         }
@@ -48,10 +48,15 @@ public class BulletScript : MonoBehaviour
 
     public void ReturnToPool()
     {
-        if(gameObject.tag == "PlayerBullet")
+        if(gameObject.CompareTag("PlayerBullet"))
         {
             gameObject.SetActive(false);
             sBulletManager.lPlayerBullet.Add(this);
+        }
+        else if(gameObject.CompareTag("Boss Bullet"))
+        {
+            gameObject.SetActive(false);
+            sBulletManager.lBossBullet.Add(this);
         }
         else
         {

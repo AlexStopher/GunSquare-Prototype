@@ -97,7 +97,7 @@ public class EnemyScript : MonoBehaviour
 
         
 
-        if (gameObject.CompareTag("Medium Enemy"))
+        if (gameObject.CompareTag("Medium Enemy") && Time.timeScale != 0)
         {
             
             //Enemy states 
@@ -135,12 +135,12 @@ public class EnemyScript : MonoBehaviour
 
 
         }
-        else if(eCurrentState == eEnemyState.Chasing)
+        else if(eCurrentState == eEnemyState.Chasing && Time.timeScale != 0)
         {
             transform.LookAt(PlayerTarget);
             Movement();
         }
-        else
+        else if(Time.timeScale != 0)
         {
             //change this to chasing to clean up the enemy behaviour and make it more consistent
             transform.LookAt(PlayerTarget);

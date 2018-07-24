@@ -138,7 +138,7 @@ InputManager:
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
-    positiveButton: 
+    positiveButton: joystick button 7
     altNegativeButton: 
     altPositiveButton: 
     gravity: 1
@@ -147,7 +147,7 @@ InputManager:
     snap: 0
     invert: 0
     type: 0
-    axis: 27
+    axis: 6
     joyNum: 1
   - serializedVersion: 3
     m_Name: Cancel

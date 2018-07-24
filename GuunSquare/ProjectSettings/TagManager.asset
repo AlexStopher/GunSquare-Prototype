@@ -26,6 +26,7 @@ TagManager:
   - Powerup Generator
   - Options
   - Boss
+  - Boss Bullet
   layers:
   - Default
   - TransparentFX
