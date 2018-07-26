@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine;
 
 
-
+//Class that is used to load scenes and quit the game
 public class LoadScene : MonoBehaviour {
 
     public void LoadGameScene(int Scene)

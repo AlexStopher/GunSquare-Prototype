@@ -19,6 +19,7 @@ public class BulletScript : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
+        //moves the bullet forward constantly
         rBullet.MovePosition(new Vector3(transform.position.x + transform.forward.x * Speed, transform.position.y + transform.forward.y * Speed,
                                             transform.position.z + transform.forward.z * Speed));
 
@@ -48,8 +49,13 @@ public class BulletScript : MonoBehaviour
 
     public void ReturnToPool()
     {
-        if(gameObject.CompareTag("PlayerBullet"))
+        //removes the current velocity of the bullet to avoid physics problems when pulled from the pool again
+        rBullet.velocity = Vector3.zero;
+        rBullet.angularVelocity = Vector3.zero;
+
+        if (gameObject.CompareTag("PlayerBullet"))
         {
+            
             gameObject.SetActive(false);
             sBulletManager.lPlayerBullet.Add(this);
         }

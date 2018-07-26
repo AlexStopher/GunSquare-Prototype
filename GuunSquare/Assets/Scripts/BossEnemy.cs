@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 /*
     This Boss class is a mess, needs to be cleaned up and optimised      
 */
@@ -24,6 +24,8 @@ public class BossEnemy : MonoBehaviour
     bool mCanFire;
     bool mAddCanFire;
     bool mAltPhaseFour;
+    public Slider uiHealthBar;
+    public Canvas uiEnemyHud;
 
     public bool mTurningClockwise;
     bool mMovingLeft;
@@ -64,6 +66,7 @@ public class BossEnemy : MonoBehaviour
     {
         rot = transform.eulerAngles.y;
 
+        //switch that uses an enum to determine what stage the boss is in and carry out different behaviours
         switch(eCurrentPhase)
         {
             //Setup phase, currently moves towards a set target and changes to phase one when in range
@@ -71,13 +74,13 @@ public class BossEnemy : MonoBehaviour
                 {
                     transform.LookAt(Target);
                     MovementForward();
-
+                    
                     if (Vector3.Distance(this.transform.position, Target) <= 1)
                         eCurrentPhase = eBossPhase.ePhaseOne;
 
                     break;
                 }
-                //
+                //Shoots on the spot and rotates
             case eBossPhase.ePhaseOne:
                 {
 
@@ -108,6 +111,7 @@ public class BossEnemy : MonoBehaviour
 
                     break;
                 }
+                //Moves left and right and shoots towards -Z
             case eBossPhase.ePhaseTwo:
                 {
                     if (mMovingLeft == true && transform.position.x >= -10.0f)
@@ -137,6 +141,7 @@ public class BossEnemy : MonoBehaviour
                 {
                     break;
                 }
+                //Moves to a spot to prepare for the final phase
             case eBossPhase.ePhaseFourTransform:
                 {
                     transform.LookAt(Target);
@@ -177,33 +182,72 @@ public class BossEnemy : MonoBehaviour
     private IEnumerator FireBullet(float speed)
     {
         mCanFire = false;
+        uiHealthBar.value = mHealth;
 
-        //Clean this up, optimise
+        //Fires bullets based off of the current phase
+        switch(eCurrentPhase)
+        {
 
-        if (eCurrentPhase == eBossPhase.ePhaseOne)
-        {
-            for (int i = 0; i < lBulletGensPhaseOne.Count; i++)
-                lBulletGensPhaseOne[i].ShootBullet();
-        }
-        else if (eCurrentPhase == eBossPhase.ePhaseTwo)
-        {
-            for (int i = 0; i < lBulletGensPhaseTwo.Count; i++)
-                lBulletGensPhaseTwo[i].ShootBullet();
-        }
-        else if (eCurrentPhase == eBossPhase.ePhaseFour && mAltPhaseFour == false)
-        {
-            for (int i = 0; i < lBulletGensPhaseFour.Count; i++)
-                lBulletGensPhaseFour[i].ShootBullet();
+            case eBossPhase.ePhaseOne:
+                {
+                    for (int i = 0; i < lBulletGensPhaseOne.Count; i++)
+                           lBulletGensPhaseOne[i].ShootBullet();
 
-            mAltPhaseFour = true;
-        }
-        else if (eCurrentPhase == eBossPhase.ePhaseFour && mAltPhaseFour == true)
-        {
-            for (int i = 0; i < lBulletGensPhaseFourAlt.Count; i++)
-                lBulletGensPhaseFourAlt[i].ShootBullet();
+                    break;
+                }
+            case eBossPhase.ePhaseTwo:
+                {
+                     for (int i = 0; i < lBulletGensPhaseTwo.Count; i++)
+                            lBulletGensPhaseTwo[i].ShootBullet();
 
-            mAltPhaseFour = false;
+                     break;
+                }
+            case eBossPhase.ePhaseFour:
+                {
+                     if(mAltPhaseFour == false)
+                     {
+                        for (int i = 0; i < lBulletGensPhaseFour.Count; i++)
+                            lBulletGensPhaseFour[i].ShootBullet();
+
+                        mAltPhaseFour = true;
+                     }
+                    else
+                    {
+                        for (int i = 0; i < lBulletGensPhaseFourAlt.Count; i++)
+                            lBulletGensPhaseFourAlt[i].ShootBullet();
+
+                        mAltPhaseFour = false;
+                    }
+
+                    break;
+                }
+            default:
+                break;
         }
+        //if (eCurrentPhase == eBossPhase.ePhaseOne)
+        //{
+        //    for (int i = 0; i < lBulletGensPhaseOne.Count; i++)
+        //        lBulletGensPhaseOne[i].ShootBullet();
+        //}
+        //else if (eCurrentPhase == eBossPhase.ePhaseTwo)
+        //{
+        //    for (int i = 0; i < lBulletGensPhaseTwo.Count; i++)
+        //        lBulletGensPhaseTwo[i].ShootBullet();
+        //}
+        //else if (eCurrentPhase == eBossPhase.ePhaseFour && mAltPhaseFour == false)
+        //{
+        //    for (int i = 0; i < lBulletGensPhaseFour.Count; i++)
+        //        lBulletGensPhaseFour[i].ShootBullet();
+
+        //    mAltPhaseFour = true;
+        //}
+        //else if (eCurrentPhase == eBossPhase.ePhaseFour && mAltPhaseFour == true)
+        //{
+        //    for (int i = 0; i < lBulletGensPhaseFourAlt.Count; i++)
+        //        lBulletGensPhaseFourAlt[i].ShootBullet();
+
+        //    mAltPhaseFour = false;
+        //}
 
         yield return new WaitForSeconds(speed);
 
@@ -231,21 +275,30 @@ public class BossEnemy : MonoBehaviour
                                              (transform.position.z + transform.forward.z * 0.1f));
     }
 
+    //grab object from pool
     public void FetchFromPool()
     {
+        //Enable the game objects
         this.gameObject.SetActive(true);
+        uiEnemyHud.gameObject.SetActive(true);
+        uiHealthBar.gameObject.SetActive(true);
 
+        //Set boss just outside of view
         transform.position = new Vector3(0,5,15);
 
     }
 
+    //return to pool
     public void ReturnToPool()
     {
-       
+       //set game objects to false
         this.gameObject.SetActive(false);
+        uiEnemyHud.gameObject.SetActive(false);
+        uiHealthBar.gameObject.SetActive(false);
 
+        //add game object back to pool
         sEnemyGen.lBossEnemy.Add(this);
-
+       
         gameObject.transform.position = sEnemyGen.transform.position;
 
     }

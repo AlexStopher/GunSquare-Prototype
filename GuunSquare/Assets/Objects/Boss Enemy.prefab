@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 135185659739761482}
   - component: {fileID: 23922863730460354}
   - component: {fileID: 114996144233382534}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Boss Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -244,6 +244,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsPlayer: 0
+  IsBossBullet: 0
   Bullet: {fileID: 1828510334223830, guid: 5a96c9e652af1c048be8fb35c1d93f52, type: 2}
 --- !u!114 &114373667793350736
 MonoBehaviour:
@@ -257,6 +258,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsPlayer: 0
+  IsBossBullet: 0
   Bullet: {fileID: 1828510334223830, guid: 5a96c9e652af1c048be8fb35c1d93f52, type: 2}
 --- !u!114 &114398169150583894
 MonoBehaviour:
@@ -270,6 +272,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsPlayer: 0
+  IsBossBullet: 0
   Bullet: {fileID: 1828510334223830, guid: 5a96c9e652af1c048be8fb35c1d93f52, type: 2}
 --- !u!114 &114652539339188952
 MonoBehaviour:
@@ -283,6 +286,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsPlayer: 0
+  IsBossBullet: 0
   Bullet: {fileID: 1828510334223830, guid: 5a96c9e652af1c048be8fb35c1d93f52, type: 2}
 --- !u!114 &114989187264070152
 MonoBehaviour:
@@ -296,6 +300,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsPlayer: 0
+  IsBossBullet: 0
   Bullet: {fileID: 1828510334223830, guid: 5a96c9e652af1c048be8fb35c1d93f52, type: 2}
 --- !u!114 &114996144233382534
 MonoBehaviour:
@@ -311,11 +316,12 @@ MonoBehaviour:
   rot: 0
   mHealth: 100
   mRotateSpeed: 1
+  uiHealthBar: {fileID: 0}
+  uiEnemyHud: {fileID: 0}
   mTurningClockwise: 0
   mSpeed: 0.2
   mMoveSpeed: 0.1
   eCurrentPhase: 0
-  lAdds: []
   lBulletGensPhaseOne:
   - {fileID: 114373667793350736}
   - {fileID: 114398169150583894}
@@ -325,6 +331,9 @@ MonoBehaviour:
   - {fileID: 114267094566121222}
   - {fileID: 114652539339188952}
   lBulletGensPhaseThree: []
+  lBulletGensPhaseFour: []
+  lBulletGensPhaseFourAlt: []
+  lBulletGensPhaseFourAdds: []
 --- !u!135 &135185659739761482
 SphereCollider:
   m_ObjectHideFlags: 1

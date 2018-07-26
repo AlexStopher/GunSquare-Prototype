@@ -246,11 +246,14 @@ public class EnemyScript : MonoBehaviour
         }
         else if(collision.gameObject.CompareTag("Player") && gameObject.CompareTag("Chasing Enemy"))
         {
-            Health = 0;
+            if (eCurrentState != eEnemyState.Disabled)
+            {
+                Health = 0;
 
-            sSoundManager.PlaySound(ClipDestroySound);
-            sGameManager.EnemiesLeft--;
-            ReturnToPool();
+                sSoundManager.PlaySound(ClipDestroySound);
+                sGameManager.EnemiesLeft--;
+                ReturnToPool();
+            }
         }
         
       

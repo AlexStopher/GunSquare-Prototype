@@ -15,6 +15,7 @@ public class BulletGenerator : MonoBehaviour
         sBulletManager = GameObject.FindGameObjectWithTag("Bullet Generator").GetComponent<BulletManager>();
 	}
 
+    //Shoots the bullet and checks to see which object type is using the bullet generator
     public void ShootBullet()
     {
         if (IsPlayer)

@@ -15,12 +15,11 @@ public class Player : MonoBehaviour
 
     Rigidbody rPlayer;
 
-    public float Speed;
-    bool CanFire = true;
+    public float mSpeed;
+    bool mCanFire = true;
     public eItemLevels eGunLevel = 0;
-    public int Health = 4;
-    public float RateOfFire = 1.0f;
-    public float ShotSpeed;
+    public int mHealth = 4;
+    public float mRateOfFire;
     public bool mPaused;
     public bool UnpausedThisFrame;
 
@@ -30,9 +29,9 @@ public class Player : MonoBehaviour
 
     public Vector3 Target;
     public List<BulletGenerator> sBulGen;
-    public MeshRenderer[] HealthBar;
-    public MeshRenderer Shield;
-    public MeshRenderer AmmoBar;
+    public MeshRenderer[] meshHealthBar;
+    public MeshRenderer meshShield;
+    public MeshRenderer AmmoBar; //needs to be removed
     public Slider uiAmmoBar;
 
     public GameObject mHowToPlay;
@@ -47,7 +46,8 @@ public class Player : MonoBehaviour
     void Start ()
     {
         rPlayer = GetComponent<Rigidbody>();
-        Speed = 0.2f;
+        mSpeed = 0.2f;
+        mRateOfFire = 0.2f;
         audioOutput = GetComponent<AudioSource>();
         sPowerUps = GameObject.FindGameObjectWithTag("Powerup Generator").GetComponent<PowerupGenerator>();
         sOptions = GameObject.FindGameObjectWithTag("Options").GetComponent<Options>();
@@ -62,6 +62,7 @@ public class Player : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
+        //resets frame by frame locks
         mGunPoweredUp = false;
         UnpausedThisFrame = false;
 
@@ -77,7 +78,7 @@ public class Player : MonoBehaviour
                 mHowToPlay.SetActive(false);
         }
 
-        if (Health > 0 && mPaused == false)
+        if (mHealth > 0 && mPaused == false)
         {
             //checks to see if the player chose to use a keyboard and mouse or a controller
             if (sOptions.UsingController == false)
@@ -89,73 +90,75 @@ public class Player : MonoBehaviour
                 if (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.W))
                 {
                     //rPlayer.MovePosition(transform.position + new Vector3(-0.5f, 0.0f, 0.5f) * 0.75f);
-                    transform.position = new Vector3(transform.position.x - Speed, transform.position.y, transform.position.z + Speed);
+                    transform.position = new Vector3(transform.position.x - mSpeed, transform.position.y, transform.position.z + mSpeed);
                 }
                 else if (Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.W))
                 {
                     //rPlayer.MovePosition(transform.position + new Vector3(0.5f, 0.0f, 0.5f) * 0.75f);
-                    transform.position = new Vector3(transform.position.x + Speed, transform.position.y, transform.position.z + Speed);
+                    transform.position = new Vector3(transform.position.x + mSpeed, transform.position.y, transform.position.z + mSpeed);
                 }
                 else if (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.S))
                 {
                     //rPlayer.MovePosition(transform.position + new Vector3(-0.5f, 0.0f, -0.5f) * 0.75f);
-                    transform.position = new Vector3(transform.position.x - Speed, transform.position.y, transform.position.z - Speed);
+                    transform.position = new Vector3(transform.position.x - mSpeed, transform.position.y, transform.position.z - mSpeed);
                 }
                 else if (Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.S))
                 {
                     //rPlayer.MovePosition(transform.position + new Vector3(0.5f, 0.0f, -0.5f) * 0.75f);
-                    transform.position = new Vector3(transform.position.x + Speed, transform.position.y, transform.position.z - Speed);
+                    transform.position = new Vector3(transform.position.x + mSpeed, transform.position.y, transform.position.z - mSpeed);
                 }
                 else if (Input.GetKey(KeyCode.W))
                 {
                     //rPlayer.MovePosition(transform.position + Vector3.forward * 0.5f);
-                    transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + Speed);
+                    transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + mSpeed);
                 }
                 else if (Input.GetKey(KeyCode.S))
                 {
                     //rPlayer.MovePosition(transform.position + Vector3.back * Speed);
-                    transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - Speed);
+                    transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - mSpeed);
                 }
                 else if (Input.GetKey(KeyCode.D))
                 {
                     //rPlayer.MovePosition((transform.position + Vector3.right) * 0.5f);
-                    transform.position = new Vector3(transform.position.x + Speed, transform.position.y, transform.position.z);
+                    transform.position = new Vector3(transform.position.x + mSpeed, transform.position.y, transform.position.z);
                 }
                 else if (Input.GetKey(KeyCode.A))
                 {
                     //rPlayer.MovePosition(transform.position + Vector3.left * 0.5f);
-                    transform.position = new Vector3(transform.position.x - Speed, transform.position.y, transform.position.z);
+                    transform.position = new Vector3(transform.position.x - mSpeed, transform.position.y, transform.position.z);
                 }
 
+                //Fetches the position of the mouse and translates it to worldspace to track the lookat of the player
                 Vector3 MousePosition = Input.mousePosition;
 
                 Vector3 Raycast = MousePosition - transform.position;
 
                 Target = Camera.main.ScreenToWorldPoint(Raycast);
-                Target.y = 1;
-                //new Vector3(transform.position.x + Raycast.x, transform.position.y, transform.position.z + Raycast.z);
+                Target.y = 1;              
 
                 transform.LookAt(Target, Vector3.up);
 
+                //slowdown / powerup input that changes the speed of the character
                 if (Input.GetMouseButton(1))
                 {
-                    Speed = 0.1f;
+                    mSpeed = 0.1f;
                     //Raycast effects go here
                     if (mGunAmmo > 0)
                         mGunPoweredUp = true;
                 }
                 else
                 {
-                    Speed = 0.2f;
+                    mSpeed = 0.2f;
                 }
 
-                if (Input.GetMouseButton(0) && CanFire == true)
+                //Fire input
+                if (Input.GetMouseButton(0) && mCanFire == true)
                 {
                     audioOutput.PlayOneShot(audioBulletsound);
                     StartCoroutine(FireWeapon());
                 }
 
-
+                //Pause input
                 if (Input.GetKeyDown(KeyCode.Escape) == true && UnpausedThisFrame == false)
                 {
                     Time.timeScale = 0;
@@ -168,7 +171,7 @@ public class Player : MonoBehaviour
             else if (sOptions.UsingController == true)
             {
                 //Player movement based off of left analogue stick position
-                rPlayer.MovePosition(transform.position + new Vector3(Input.GetAxis("HorizontalLeft"), 0, Input.GetAxis("VerticalLeft")) * Speed);
+                rPlayer.MovePosition(transform.position + new Vector3(Input.GetAxis("HorizontalLeft"), 0, Input.GetAxis("VerticalLeft")) * mSpeed);
 
                 //Set a point to look at based off of right analogue stick movement
                 Target = new Vector3(transform.position.x + Input.GetAxis("HorizontalRight"), transform.position.y, transform.position.z + Input.GetAxis("VerticalRight"));
@@ -178,18 +181,18 @@ public class Player : MonoBehaviour
                 //Check to see if the player is pressing the left trigger to enter the slower powered mode
                 if(Input.GetAxis("LeftTrigger") >= 0.1f)
                 {
-                    Speed = 0.1f;
+                    mSpeed = 0.1f;
                     //Raycast effects go here
                     if (mGunAmmo > 0)
                         mGunPoweredUp = true;
                 }
                 else
                 {
-                    Speed = 0.2f;
+                    mSpeed = 0.2f;
                 }
 
                 //Starts a coroutine to shoot the bullets
-                if (Input.GetAxis("RightTrigger") >= 0.1f && CanFire == true)
+                if (Input.GetAxis("RightTrigger") >= 0.1f && mCanFire == true)
                 {
                     audioOutput.PlayOneShot(audioBulletsound);
                     StartCoroutine(FireWeapon());
@@ -213,7 +216,7 @@ public class Player : MonoBehaviour
     //Coroutine that handles all of the firing of the bullet generators attached to the object based on data
     IEnumerator FireWeapon()
     {
-        CanFire = false;
+        mCanFire = false;
 
         
         //Checks the current level of the gun and player choices to see what bullet generators to use
@@ -271,9 +274,9 @@ public class Player : MonoBehaviour
         //        sBulGen[i].ShootBullet();
         //}
 
-        yield return new WaitForSeconds(RateOfFire);
+        yield return new WaitForSeconds(mRateOfFire);
         
-        CanFire = true;
+        mCanFire = true;
     }
 
     //Returns power up to the object pool
@@ -283,6 +286,7 @@ public class Player : MonoBehaviour
         sPowerUps.lPowerup.Add(powerup);
     }
 
+    //Unpauses the game
     public void UnpauseGame()
     {
         mPaused = false;
@@ -292,6 +296,7 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        //checks the triggers to see what item was picked up
         if(other.CompareTag("PowerPickup"))
         {
             if (eGunLevel <= eItemLevels.Level2)
@@ -304,14 +309,14 @@ public class Player : MonoBehaviour
             mGunPoweredUp = true;
 
             //Need to slowly empty this out over time
-            AmmoBar.material.SetColor("_Color", Color.red);
+            //AmmoBar.material.SetColor("_Color", Color.red);
 
 
             ReturnPowerupToPool(other.gameObject);
         }
         else if (other.CompareTag("ShieldPickup"))
         {
-            Shield.enabled = true;
+            meshShield.enabled = true;
 
             audioOutput.PlayOneShot(audioShieldPickup);
 
@@ -320,16 +325,17 @@ public class Player : MonoBehaviour
         }
         else if (other.CompareTag("SpeedPickup"))
         {
-            if (Speed < 0.5f)
-                Speed += 0.1f;
+            //This currently is not implemented properly
+            if (mSpeed < 0.5f)
+                mSpeed += 0.1f;
 
             ReturnPowerupToPool(other.gameObject);
         }
         else if (other.CompareTag("HealthPickup"))
         {
-            Health = 4;
-            for(int i = 0; i < HealthBar.Length; i++)
-                HealthBar[i].material.SetColor("_Color", Color.green);
+            mHealth = 4;
+            for(int i = 0; i < meshHealthBar.Length; i++)
+                meshHealthBar[i].material.SetColor("_Color", Color.green);
 
             ReturnPowerupToPool(other.gameObject);
         }
@@ -338,52 +344,53 @@ public class Player : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        //checks what collided with the player and if an enemy it will remove health or shield
         if(collision.gameObject.CompareTag("EnemyBullet"))
         {
             collision.gameObject.GetComponent<BulletScript>().ReturnToPool();
 
-            if (Shield.enabled == true)
+            if (meshShield.enabled == true)
             {
-                Shield.enabled = false;
+                meshShield.enabled = false;
             }
             else
             {
-                if(Health > 0)
-                    Health--;
+                if(mHealth > 0)
+                    mHealth--;
 
-                HealthBar[Health].material.SetColor("_Color", Color.red);
+                meshHealthBar[mHealth].material.SetColor("_Color", Color.red);
             }
         }
         else if(collision.gameObject.CompareTag("Chasing Enemy"))
         {
-            if (Shield.enabled == true)
+            if (meshShield.enabled == true)
             {
-                Shield.enabled = false;
+                meshShield.enabled = false;
             }
             else
             {
-                if (Health > 0)
-                    Health--;
+                if (mHealth > 0)
+                    mHealth--;
 
-                HealthBar[Health].material.SetColor("_Color", Color.red);
+                meshHealthBar[mHealth].material.SetColor("_Color", Color.red);
             }
 
-            HealthBar[Health].material.SetColor("_Color", Color.red);
+            meshHealthBar[mHealth].material.SetColor("_Color", Color.red);
         }
         else if(collision.gameObject.CompareTag("Boss Bullet"))
         {
             collision.gameObject.GetComponent<BulletScript>().ReturnToPool();
 
-            if (Shield.enabled == true)
+            if (meshShield.enabled == true)
             {
-                Shield.enabled = false;
+                meshShield.enabled = false;
             }
             else
             {
-                if (Health > 0)
-                    Health--;
+                if (mHealth > 0)
+                    mHealth--;
 
-                HealthBar[Health].material.SetColor("_Color", Color.red);
+                meshHealthBar[mHealth].material.SetColor("_Color", Color.red);
             }
         }
     }

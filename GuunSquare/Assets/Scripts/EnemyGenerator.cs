@@ -18,6 +18,7 @@ public class EnemyGenerator : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
+        //hardcoded spawn points that the enemy generator uses
         lSpawnPoints = new List<Vector3> {
             new Vector3(-25.0f, 1.0f,-10.0f),
             new Vector3(-25.0f, 1.0f, 0.0f),
@@ -43,7 +44,8 @@ public class EnemyGenerator : MonoBehaviour
 		
 	}
 
-    //to do - Track what spawn points are used to make sure enemies are spread properly
+    //Spawns the wave based off of the information passed in the game manager. 
+    //This then distributes the enemies across the outside of the map to have a balanced spread
     public bool SpawnWave(int level, int LightEnemy, int MediumEnemy, int ChasingEnemy)
     {
         int EnemiesSpawned = 0;
@@ -99,6 +101,7 @@ public class EnemyGenerator : MonoBehaviour
         return false;
     }
 
+    //These functions pull the related enemy type from their respective pools and spawn them
     public void SpawnBoss()
     {
        
